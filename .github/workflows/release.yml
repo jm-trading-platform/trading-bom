@@ -17,16 +17,35 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup JDK
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-          server-id: github
+          cache: maven
 
-      - name: Deploy
-        run: mvn -B clean deploy
+      - name: Create Maven Settings
+        run: |
+          mkdir -p ~/.m2
+
+          cat > ~/.m2/settings.xml << EOF
+          <settings>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>josetelopez</username>
+                <password>${{ secrets.MAVEN_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy BOM
+        run: mvn clean deploy -U
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
