@@ -129,4 +129,14 @@
 
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>
+                https://maven.pkg.github.com/jm-trading-platform/trading-bom
+            </url>
+        </repository>
+    </distributionManagement>
+
 </project>
